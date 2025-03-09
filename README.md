@@ -1,0 +1,1 @@
+The following repository lists the Stata .do file, .tex file for processing LaTeX, and the PDF protocol. This can be used alongside the publication titled "Evaluating the implementation of a rapid access atrial fibrillation clinic utilising a pharmacist-physician model of care" published in Research in Social and Administrative Pharmacy. 
