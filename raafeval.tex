@@ -1,0 +1,192 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{siunitx}
+\usepackage{hyperref,graphicx,booktabs,dcolumn}
+\usepackage{natbib}
+\usepackage{chngcntr}
+\usepackage{pgfplotstable}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{stata}
+
+  
+\newcommand{\thedate}{\today}
+\counterwithin{figure}{section}
+\bibliographystyle{unsrt}
+\hypersetup{%
+    pdfborder = {0 0 0}
+}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{flushright}
+        \Huge
+		\textbf{Evaluation of pharmacist-physician rapid access atrial fibrillation clinic model of care}
+\color{violet}
+\rule{16cm}{2mm} \\
+\Large
+\color{black}
+Protocol \\
+\thedate \\
+\color{blue}
+\url{https://github.com/cardiopharmnerd/raaf} \\
+\color{black}
+		\vfill
+	\end{flushright}
+		\Large
+\noindent
+Adam Livori \\
+Lead pharmacist - cardiology \\
+PhD Candidate \\
+\color{blue}
+\href{mailto:adam.livori1@monash.edu}{adam.livori1@monash.edu} \\
+\color{black}
+\\
+Grampians Health Ballarat | Monash University
+\\
+Center for Medication Use and Safety, Faculty of Pharmacy and Pharmaceutical Sciences, Monash Unviersity, Melbourne, Australia \\
+\\
+\end{titlepage}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+\section{Preface}
+
+
+The is the protocol for the paper Evaluation of pharmacist-physician rapid access atrial fibrillation clinic model of care\\
+To generate this document, the Stata package texdoc \cite{Jann2016Stata} was used, which is  available from: \color{blue} \url{http://repec.sowi.unibe.ch/stata/texdoc/} \color{black} (accessed 14 November 2022).  The final Stata do file and this pdf are available at: \color{blue} \url{https://github.com/cardiopharmnerd/raaf} \color{black} 
+
+\pagebreak
+
+\section{Abbreviations}
+\begin{itemize}
+	\item AF - Atrial fibrillation
+	\item CHADSVA - Risk score for determning stroke risk in AF
+	\item DCR - Direct current reversion
+	\item ED - Emergency department
+	\item EP - Electrophysiologist	
+	\item EQ5D - European Quality of Life survey - 5 dimension version
+	\item GP - General practitioner
+	\item NOAC - Non-vitamin K oral anticoagulant
+	\item NPS - Net promoter score
+	\item RAAF - Rapid Access Atrial Fibrillation Clinic	
+	item URN - Unique registrations number
+	\item WebPAS - Web-based Patient Adminsitration System
+\end{itemize}
+	
+
+\pagebreak
+		
+\section{Introduction} \label{introduction}
+People with atrial fibrillation, the most common cardiac arrythmia worldwide, are at increased risk of hospitalization from both symptoms of atrial fibrillation, as well as higher risk of stroke and heart failure. It is important that when people are diagnosed with atrial fibrillation are risk assessed as soon as possible to ensure appropriate and safe treatment can be provided. This assessment should include stroke risk calculation and provision of anticoagulation, arrythmia symptom control plans, and comorbidity assessment, in combination with patient education. From 2022 to 2023, Grampians Health Ballarat participated in a Safer Care Victoria funded initiative to establish rapid access atrial fibrillation (RAAF) clinics. This project is a retrospective review of how the RAAF clinic provided care to patients referred to the service, both in quality of service, clinic outcomes, and patient acceptance of service, as well as investigating the costs and benefits of the RAAF clinic as a sustainable model of care. 
+
+\pagebreak
+\section{Data source and import}
+The data for this project was generated via an audit of all indivudals seen in the RAAF clinic. Data was extracted from a REDCap collection tool and stata file exported for analysis. \cite{redcap1,redcap2} A second dataset was used from the outpatient module of the hospital booking system (WebPAS) that listed all medical appointments and referrals to the RAAF clinic. 
+\color{violet}
+\begin{stlog}\input{log/1.log.tex}\end{stlog}
+\color{black}
+\section{Data cleaning}
+
+For a description of the data, we first inspected each variable to ensure there are no unusual pieces of data, and to check missing data to ensure it is intentionally blank or if there is an error in the data entry component of the REDCap tool. We took the following steps:
+\begin{enumerate}
+	\item Ensure all indivudals accounted for
+	\item Review date based variables
+	\item Review categorical variables
+\end{enumerate}
+
+\subsection{RAAF REDCap data}
+Although CHADSVA scores are shown as a continious variable, they are really an ordinal variable, and so were checked and cleaned as part of the categorical varaible review. The same approach was considered for NPS scores.
+\color{violet}
+\begin{stlog}\input{log/2.log.tex}\end{stlog}
+\color{black}
+\subsubsection{Ensure all indivudals accounted for}
+We wanted to ensure no duplicate entries based on the id numbers generated for each URN entered into the original dataset. We also needed to drop anyone who received no consults as part of this service. These were likely indivudals who originally consented to clinic, but changed their mind later. 
+\color{violet}
+\begin{stlog}\input{log/3.log.tex}\end{stlog}
+\color{black}
+\subsubsection{Review date based variables}
+We checked each of the date variables to ensure all appointments occurred after the referral date, and that the first appoointment occurred within the implementation phase of 1/4/2022 and 1/11/2023. 
+\color{violet}
+\begin{stlog}\input{log/4.log.tex}\end{stlog}
+\color{black}
+There are no negative numbers when looking at the time difference between referral/dc and first seen, so data makes sense from this perspective.
+
+\subsection{Review categorical variables}
+The majority of variables in this dataset are categorical, so we inspected each one to ensure repsonses were complete and made sense for the question being asked. We also created labels and encoded ordinal variables such as age group to make creating and merging tables easier down the track. 
+\color{violet}
+\begin{stlog}\input{log/5.log.tex}\end{stlog}
+\color{black}
+This next section required some recoding due to "0" and "No" being used as values of "None", we will check all the medication data and ensure it either lists the drug or none if no drug present. This was done both pre and post RAAF attendance for the following anti-arrythmic drug classes:
+\begin{itemize}
+	\item Beta blockers
+	\item Calcium channel blockers (non-dihydropyridine)
+	\item Flecainide
+	\item Amiodarone
+	\item Digoxin
+\end{itemize}
+
+We also created a variable to group individuals into CHADSVA of 0, 1 and greater than 2, which are strifications often use to dictate whether anticoagulation is required \cite{escaf2024}. 
+\color{violet}
+\begin{stlog}\input{log/6.log.tex}\end{stlog}
+\color{black}
+The next variables are post RAAF follow up data such as discharge management plans for symptoms, who the indivudal was discharged to (GP, specialist, etc) as well as hospital outcomes at 30 days such as unplanned ED and hospital admission presentations. 
+\color{violet}
+\begin{stlog}\input{log/7.log.tex}\end{stlog}
+\color{black}
+We created some tags to indicate changes made in medication pre and post RAAF clinic attendance. 
+\color{violet}
+\begin{stlog}\input{log/8.log.tex}\end{stlog}
+\color{black}
+\subsection{Merge in GARFIELD and HASBLED scores}
+Following completion of the study and preparation of the dataset, we made a decision to go back into the the records where the dataset was constructed and calculate risk scores for HASBLED and GARFIELD. This was used for the cost effectiveness analysis paper that followed this protocol, with the analysis available at \color{blue} \url{https://github.com/cardiopharmnerd/raaf} \color{black} . 
+\color{violet}
+\begin{stlog}\input{log/9.log.tex}\end{stlog}
+\color{black}
+\subsection{Merge in booking system data}
+We needed to merge in attendance data to confirm attendance of individuals to physician clincs and those who declined the service all together. It also lists some people who were seen as an adhoc appointment by the physician, but were misclassified as being part of the RAAF clinic. Lastly, we needed to reclassify attendance for people who saw the pharmacist but not the physician. This was for people who were already managed by an external specialist, so were seen by pharmacist and an external physician. 
+\color{violet}
+\begin{stlog}\input{log/10.log.tex}\end{stlog}
+\color{black}
+\subsection{EQ5D data}
+We used an existing Austrlian population derived value set to attribute EQ5D scores to utility scores \cite{eq5daus}
+\color{violet}
+\begin{stlog}\input{log/11.log.tex}\end{stlog}
+\color{black}
+\section{Generate result tables}
+\subsection{Model of care evaluation}
+\subsubsection{RAAF clinic cohort description}
+\color{violet}
+\begin{stlog}\input{log/12.log.tex}\end{stlog}
+\color{black}
+\subsubsection{Timely access}
+\color{violet}
+\begin{stlog}\input{log/13.log.tex}\end{stlog}
+\color{black}
+\subsubsection{Anticoagulant use before and after RAAF clinic}
+\color{violet}
+\begin{stlog}\input{log/14.log.tex}\end{stlog}
+\color{black}
+\subsubsection{Anticoagulant appropriateness and risk factors}
+\color{violet}
+\begin{stlog}\input{log/15.log.tex}\end{stlog}
+\color{black}
+\subsubsection{Anti-arrythmic use before and after RAAF clinic}
+\color{violet}
+\begin{stlog}\input{log/16.log.tex}\end{stlog}
+\color{black}
+\subsubsection{Quality of life outcomes - EQ5D}
+\color{violet}
+\begin{stlog}\input{log/17.log.tex}\end{stlog}
+\color{black}
+\subsubsection{Quality of life outcomes - NPS}
+\color{violet}
+\begin{stlog}\input{log/18.log.tex}\end{stlog}
+\clearpage
+\color{black}
+\bibliography{C:/Users/acliv1/Documents/library.bib}
+\end{document}
